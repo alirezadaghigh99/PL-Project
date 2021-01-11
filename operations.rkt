@@ -215,3 +215,5 @@
     [(and (list? arg1) (string? arg3) (string=? arg2 "+")) (list-plus-str arg1 arg3)]
     [else (eopl:error "Operand can't be applied on these arguements.")]
     ))
+
+(provide (all-defined-out))
