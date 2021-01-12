@@ -12,7 +12,7 @@
        (let ((saved-var (cadr env))
              (saved-val (caddr env))
              (saved-env (cadddr  env)))
-         (if (eqv? search-var saved-var)
+         (if (string=? search-var saved-var)
              saved-val
              (apply-env saved-env search-var)))]
       [else (report-invalid-env env)]
@@ -26,4 +26,5 @@
   (lambda (env)
     (error 'apply-env "Bad environment: ~s" env)))
 
+(define env '(extend-env a 6 (extend-env b 8 (extend-env c -4 (empty-env)))))
 (provide (all-defined-out))

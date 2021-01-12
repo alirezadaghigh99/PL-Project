@@ -54,13 +54,13 @@
             (error void)
             (grammar
 
-             [command ((keyword) (list 'keyword $1)) ((command semicolon keyword) (list 'command $1 $3))]
+             [command ((keyword) (list 'keyword $1)) ((keyword semicolon command) (list 'command $1 $3))]
              
              [keyword
             ((if-statement) (list 'if_statement $1))
             ((while-statement) (list 'while_statement $1))
             ((assignment-statement) (list 'assignment_statement $1))
-            ((return-statement) (list 'return $1))
+            ((return-statement) (list 'return_statement $1))
             ]
              
              [if-statement ((if exp then command else command end) (list 'if $2 $4 $6))]
@@ -125,5 +125,5 @@
 (define lex-this (lambda (lexer input) (lambda () (lexer input))))
 (define lexing (lex-this lexer_compiler (open-input-string "a = 3; b = [2, 3, 4]; return a + b; if a == b then a = 1; b = 0 else a = b[5] end")))
 
-(let ((parser-res (parser_compiler lexing))) parser-res)
+;(let ((parser-res (parser_compiler lexing))) parser-res)
 (provide (all-defined-out))

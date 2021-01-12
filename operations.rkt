@@ -115,7 +115,7 @@
   (cond
     [(boolean=? (is-all-num L) #f) (eopl:error "The list elements must be numbers.")]
     [(null? L) null]
-    [else (append (list(arithmetic-op num operand (car L))) (list-op-num (cdr L) operand num))]
+    [else (append (list(arithmetic-op num operand (car L))) (num-op-list (cdr L) operand num))]
     ))
 
 (define (list-op-boolean L operand num)
