@@ -1,3 +1,13 @@
-a = 'sina';
-b = ['kazemi' , 'kos'];
-return a + b
+a = 1;
+b = 9;
+c = 3;
+d=0;
+while (a != b )	
+ do 
+   a =  a + 1;
+   c = c + 1
+
+
+  end;
+ return a + b +c
+

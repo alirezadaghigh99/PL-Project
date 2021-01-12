@@ -23,13 +23,13 @@
 
         [(equal? action 'keyword)
          (let ((result (value-of (cadr tree) env)))
-           (if (equal? (caddr result) 'END)
+           (if (equal? (cadr result) 'END)
                (list (car result) (cadr result) 'END)
                (value-of (cadr tree) (cadr result)))
           )]
 
         [(equal? action 'if_statement) (value-of (cadr tree) env)]
-        [(equal? action 'while_statement) (value-of (cadr tree) env)]
+        [(equal? action 'while_statement) (value-of (cadr tree) env) ]
         [(equal? action 'assignment_statement) (value-of (cadr tree) env)]
         [(equal? action 'return_statement) (value-of (cadr tree) env)]
 
@@ -43,15 +43,21 @@
          ]
 
         [(equal? action 'while)
+         
          (let ((exp-result (value-of (cadr tree) env)))
-           (if (and (car exp-result) (not (eqv? (caddr exp-result) 'NOTEND)))
+           
+           (if (and (car exp-result) (not (eqv? (cadr exp-result) 'END)))
+               (begin
+               (display exp-result)
                (let* ((new-env (cadr exp-result))
                       (command-result (value-of (caddr tree) new-env)))
-                 (if (not (eqv? (caddr command-result) 'NOTEND))
+                 
+                 
+                 (if (not (eqv? (cadr command-result) 'END))
                      (let ((condition-new-env (cadr command-result)))
                        (value-of tree condition-new-env))
                       exp-result)
-                 )
+                 ))
                  exp-result
              )
            )
@@ -59,7 +65,9 @@
 
         [(equal? action 'return)
          (let ((result (value-of (cadr tree) env)))
-           (list (car result) (cadr result) 'END)
+           (list (car result) (cadr result)
+
+                 )
            )
          ]
 
@@ -252,7 +260,9 @@
     (define lex-this (lambda (lexer input) (lambda () (lexer input))))
     (define my-lexer (lex-this lexer_compiler (open-input-string input-string)))
     (let
+
         ((parser-res (parser_compiler my-lexer)))
+        (display  parser-res)
         (car (value-of parser-res (empty-env))))))
 
 (evaluate "a.txt")
