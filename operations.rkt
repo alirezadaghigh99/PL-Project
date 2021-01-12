@@ -129,7 +129,7 @@
   (cond
     [(boolean=? (is-all-str L) #f) (eopl:error "The list elements must be strings.")]
     [(null? L) null]
-    [else (append (list(string-append str (car L))) (str-plus-list str (cdr L)))]
+    [else (append (list(string-append str (car L))) (str-plus-list (cdr L) str))]
     ))
 
 (define (list-plus-str L str)
