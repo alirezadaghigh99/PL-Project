@@ -246,6 +246,13 @@
     )
   )
 
-(define lex-this (lambda (lexer input) (lambda () (lexer input))))
-(define lexing (lex-this lexer_compiler (open-input-string "a = [1, 3, 6]; b = 6; c = b / a; if c > 1 then d = [[1 , 2] , [3 , 4]] else d = [[3 , 4] , [1 , 2]] end; return d[0][1]")))
-(let ((parser-res (parser_compiler lexing))) (car (value-of parser-res (empty-env))))
+(define evaluate
+  (lambda (path)
+    (define input-string (file->string path))
+    (define lex-this (lambda (lexer input) (lambda () (lexer input))))
+    (define my-lexer (lex-this lexer_compiler (open-input-string input-string)))
+    (let
+        ((parser-res (parser_compiler my-lexer)))
+        (car (value-of parser-res (empty-env))))))
+
+(evaluate "a.txt")
