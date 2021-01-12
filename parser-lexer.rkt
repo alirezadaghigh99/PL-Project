@@ -33,6 +33,7 @@
    ["then" (token-then)]
    ["else" (token-else)]
    ["null" (token-null null)]
+   ["print" (token-print)]
    [(:or "true" "false") (token-bool (if (equal? lexeme "true") #t #f))]
    [(:+ (:or (char-range #\a #\z) (char-range #\A #\Z))) (token-var lexeme)]
    [(:or (:+ (char-range #\0 #\9)) (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9)))) (token-num (string->number lexeme))]
@@ -44,7 +45,7 @@
    ))
 
 (define-tokens a (num string bool var null))
-(define-empty-tokens b (eof plus minus multiply division equal assign not-eq greater less semicolon comma lbracket rbracket lpar rpar lcurly rcurly return while dowhile end if then else))
+(define-empty-tokens b (eof plus minus multiply division equal assign not-eq greater less semicolon comma lbracket rbracket lpar rpar lcurly rcurly return while dowhile end if then else print))
 
 (define parser_compiler
   (parser
@@ -61,6 +62,7 @@
             ((while-statement) (list 'while_statement $1))
             ((assignment-statement) (list 'assignment_statement $1))
             ((return-statement) (list 'return_statement $1))
+            ((print-statement) (list 'print_statement $1))
             ]
              
              [if-statement ((if exp then command else command end) (list 'if $2 $4 $6))]
@@ -71,6 +73,8 @@
              [assignment-statement ((var assign exp) (list 'assign $1 $3))]
            
              [return-statement ((return exp) (list 'return $2))]
+
+             [print-statement ((print exp) (list 'print $2))]
            
            [exp
             ((aexp) (list 'aexp $1))

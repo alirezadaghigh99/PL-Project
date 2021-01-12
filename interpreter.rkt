@@ -32,6 +32,7 @@
         [(equal? action 'while_statement) (value-of (cadr tree) env)]
         [(equal? action 'assignment_statement) (value-of (cadr tree) env)]
         [(equal? action 'return_statement) (value-of (cadr tree) env)]
+        [(equal? action 'print_statement) (value-of (cadr tree) env)]
 
         [(equal? action 'if)
          (let* ((exp-result (value-of (cadr tree) env))
@@ -66,6 +67,14 @@
         [(equal? action 'assign)
          (let ((result (value-of (caddr tree) env)))
            (list (car result) (extend-env (cadr tree) (car result) (cadr result)) 'NOTEND)
+           )
+         ]
+
+        [(equal? action 'print)
+         (let ((result (value-of (cadr tree) env)))
+           (display (car result))
+           (display "\n")
+           (list (car result) (cadr result) 'NOTEND)
            )
          ]
 
