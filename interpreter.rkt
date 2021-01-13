@@ -52,7 +52,7 @@
                  (if (not (eqv? (caddr command-result) 'END))
                      (let ((condition-new-env (cadr command-result)))
                        (value-of tree condition-new-env))
-                      exp-result)
+                      command-result)
                  )
                  exp-result
              )
@@ -80,19 +80,21 @@
          ]
 
         [(equal? action 'switch)
-         (display action)
-         (let* ((var-val (apply-env env (cadr tree)))
+         (let* ((exp-val (car (value-of (cadr tree) env)))
                 (case-result (value-of (caddr tree) env))
-                (cases-list (caddr tree)))
-           (while (and (not (equal? (car case-result) var-val)) (equal? (car cases-list) 'multi-case))
-               ((set! cases-list (cadddr cases-list))
-               (set! case-result (value-of cases-list env))))
+                (cases-list (caddr tree))
+                )
+           (let ((x (do ((case-result (value-of (caddr tree) env) (if (null? (cdddr cases-list)) (value-of cases-list env) (value-of (cadddr cases-list) env))) (cases-list (caddr tree) (if (null? (cdddr cases-list)) cases-list (cadddr cases-list))))
+             ((or (equal? (car case-result) exp-val) (equal? (car cases-list) 'single-case)) (list cases-list case-result))
+             )))
+           (let* ((cases-list (car x))
+                  (case-result (cadr x)))
            (if (equal? (car cases-list) 'single-case)
-               (if (equal? (car case-result) var-val)
-                   ((value-of (cddr (cases-list)) env))
-                   (value-of (cdddr tree) env))
-               ((value-of (cddr (cases-list)) env)))
-           )
+               (if (equal? (car case-result) exp-val)
+                   (value-of (caddr cases-list) env)
+                   (value-of (cadddr tree) env))
+               (value-of (caddr cases-list) env)
+           ))))
          ]
 
         [(equal? action 'single-case)
@@ -285,8 +287,8 @@
   )
 
 (define (while condition body)
-  (when (condition)
-    (body)
+  (when condition
+    body
     (while condition body)))
 
 (define evaluate
