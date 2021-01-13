@@ -42,7 +42,7 @@
    [(:or "true" "false") (token-bool (if (equal? lexeme "true") #t #f))]
    [(:+ (:or (char-range #\a #\z) (char-range #\A #\Z))) (token-var lexeme)]
    [(:or (:+ (char-range #\0 #\9)) (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9)))) (token-num (string->number lexeme))]
-   [(:: "'" (complement (:: any-string "'" any-string)) "'") (token-string (substring lexeme 1 (- (string-length lexeme) 1)))]
+   [(:: "\"" (complement (:: any-string "\"" any-string)) "\"") (token-string (substring lexeme 1 (- (string-length lexeme) 1)))]
    [whitespace (lexer_compiler input-port)]
    [(eof) (token-eof)]
    [(:+ (:or "@" "!" "#" "%" "^" "&" "~" "{" "}")) (eopl:error (string-append lexeme " is unknown!"))]
@@ -52,12 +52,63 @@
 (define-tokens a (num string bool var null))
 (define-empty-tokens b (eof plus minus multiply division equal assign not-eq greater less semicolon comma lbracket rbracket lpar rpar lcurly rcurly return while dowhile end if then else print switch case default begin colon))
 
+(define (error-thrower name value)
+  (if (equal? value #f)
+      (let ((sym (cond
+                   [(equal? name 'eof) "end of file"]
+                   [(equal? name 'plus) "+"]
+                   [(equal? name 'minus) "-"]
+                   [(equal? name 'multiply) "*"]
+                   [(equal? name 'division) "/"]
+                   [(equal? name 'assign) "="]
+                   [(equal? name 'equal) "=="]
+                   [(equal? name 'not-eq) "!="]
+                   [(equal? name 'greater) ">"]
+                   [(equal? name 'less) "<"]
+                   [(equal? name 'lpar) "("]
+                   [(equal? name 'rpar) ")"]
+                   [(equal? name 'lbracket) "["]
+                   [(equal? name 'rbracket) "]"]
+                   [(equal? name 'lcurly) "{"]
+                   [(equal? name 'rcurly) "}"]
+                   [(equal? name 'colon) ":"]
+                   [(equal? name 'comma) ","]
+                   [(equal? name 'semicolon) ";"]
+                   [(equal? name 'return) "return"]
+                   [(equal? name 'while) "while"]
+                   [(equal? name 'dowhile) "do"]
+                   [(equal? name 'end) "end"]
+                   [(equal? name 'if) "if"]
+                   [(equal? name 'then) "then"]
+                   [(equal? name 'else) "else"]
+                   [(equal? name 'switch) "switch"]
+                   [(equal? name 'begin) "begin"]
+                   [(equal? name 'case) "case"]
+                   [(equal? name 'default) "default"]
+                   [(equal? name 'print) "print"]
+                   )))
+                 
+                  
+
+        (eopl:error (string-append "syntax error near " sym)))
+      (cond
+        [(number? value) (eopl:error (string-append "syntax error near " (number->string value)))]
+        [(equal? name 'VAR) (eopl:error (string-append value " is not defined as a syntax token"))]
+        [(equal? name 'NULL) (eopl:error "syntax error near null")]
+        [(string? value) (eopl:error (string-append "syntax error near " value))]
+        [(boolean? value) (if value (eopl:error (string-append "syntax error near " "true")) (eopl:error (string-append "syntax error near " "false")))]
+        )
+  ))
+
 (define parser_compiler
   (parser
    (start command)
             (end eof)
             (tokens a b)
-            (error void)
+            (error (lambda (token-ok? token-name token-value)
+                     (displayln (error-thrower token-name token-value))
+
+                    ))
             (grammar
 
              [command ((keyword) (list 'keyword $1)) ((keyword semicolon command) (list 'command $1 $3))]
@@ -82,7 +133,7 @@
 
              [print-statement ((print exp) (list 'print $2))]
 
-             [switch-statement ((switch var begin cases default command end) (list 'switch $2 $4 $6))]
+             [switch-statement ((switch exp begin cases default command end) (list 'switch $2 $4 $6))]
            
            [exp
             ((aexp) (list 'aexp $1))
