@@ -33,6 +33,7 @@
         [(equal? action 'assignment_statement) (value-of (cadr tree) env)]
         [(equal? action 'return_statement) (value-of (cadr tree) env)]
         [(equal? action 'print_statement) (value-of (cadr tree) env)]
+        [(equal? action 'switch_statement) (value-of (cadr tree) env)]
 
         [(equal? action 'if)
          (let* ((exp-result (value-of (cadr tree) env))
@@ -74,6 +75,34 @@
          (let ((result (value-of (cadr tree) env)))
            (display (car result))
            (display "\n")
+           (list (car result) (cadr result) 'NOTEND)
+           )
+         ]
+
+        [(equal? action 'switch)
+         (display action)
+         (let* ((var-val (apply-env env (cadr tree)))
+                (case-result (value-of (caddr tree) env))
+                (cases-list (caddr tree)))
+           (while (and (not (equal? (car case-result) var-val)) (equal? (car cases-list) 'multi-case))
+               ((set! cases-list (cadddr cases-list))
+               (set! case-result (value-of cases-list env))))
+           (if (equal? (car cases-list) 'single-case)
+               (if (equal? (car case-result) var-val)
+                   ((value-of (cddr (cases-list)) env))
+                   (value-of (cdddr tree) env))
+               ((value-of (cddr (cases-list)) env)))
+           )
+         ]
+
+        [(equal? action 'single-case)
+         (let ((result (value-of (cadr tree) env)))
+           (list (car result) (cadr result) 'NOTEND)
+           )
+         ]
+
+        [(equal? action 'multi-case)
+         (let ((result (value-of (cadr tree) env)))
            (list (car result) (cadr result) 'NOTEND)
            )
          ]
@@ -254,6 +283,11 @@
       )
     )
   )
+
+(define (while condition body)
+  (when (condition)
+    (body)
+    (while condition body)))
 
 (define evaluate
   (lambda (path)

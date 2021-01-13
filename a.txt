@@ -1,1 +1,1 @@
-a = 1; while a != 4 do print a; a = a + 1 end; return 0
+a = 4; b = 0; c = 1; switch a begin case 2 : b = 3 case 4 : b = 6 default b = 9 end; return b

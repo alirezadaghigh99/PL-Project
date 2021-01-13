@@ -18,6 +18,7 @@
    ["<" (token-less)]
    ["!=" (token-not-eq)]
    [";" (token-semicolon)]
+   [":" (token-colon)]
    ["," (token-comma)]
    ["[" (token-lbracket)]
    ["]" (token-rbracket)]
@@ -34,6 +35,10 @@
    ["else" (token-else)]
    ["null" (token-null null)]
    ["print" (token-print)]
+   ["switch" (token-switch)]
+   ["case" (token-case)]
+   ["default" (token-default)]
+   ["begin" (token-begin)]
    [(:or "true" "false") (token-bool (if (equal? lexeme "true") #t #f))]
    [(:+ (:or (char-range #\a #\z) (char-range #\A #\Z))) (token-var lexeme)]
    [(:or (:+ (char-range #\0 #\9)) (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9)))) (token-num (string->number lexeme))]
@@ -45,7 +50,7 @@
    ))
 
 (define-tokens a (num string bool var null))
-(define-empty-tokens b (eof plus minus multiply division equal assign not-eq greater less semicolon comma lbracket rbracket lpar rpar lcurly rcurly return while dowhile end if then else print))
+(define-empty-tokens b (eof plus minus multiply division equal assign not-eq greater less semicolon comma lbracket rbracket lpar rpar lcurly rcurly return while dowhile end if then else print switch case default begin colon))
 
 (define parser_compiler
   (parser
@@ -63,6 +68,7 @@
             ((assignment-statement) (list 'assignment_statement $1))
             ((return-statement) (list 'return_statement $1))
             ((print-statement) (list 'print_statement $1))
+            ((switch-statement) (list 'switch_statement $1))
             ]
              
              [if-statement ((if exp then command else command end) (list 'if $2 $4 $6))]
@@ -75,6 +81,8 @@
              [return-statement ((return exp) (list 'return $2))]
 
              [print-statement ((print exp) (list 'print $2))]
+
+             [switch-statement ((switch var begin cases default command end) (list 'switch $2 $4 $6))]
            
            [exp
             ((aexp) (list 'aexp $1))
@@ -122,7 +130,11 @@
              ((lbracket exp rbracket) (list 'list-member $2))
              ((lbracket exp rbracket listMember) (list 'list-members $2 $4))
              ]
-           
+
+            [cases
+             ((case exp colon command) (list 'single-case $2 $4))
+             ((case exp colon command cases) (list 'multi-case $2 $4 $5))
+             ]
              )))
 
 
