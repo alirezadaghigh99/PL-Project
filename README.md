@@ -23,7 +23,7 @@ This module is main module and combines all other parts to compute value of give
 
 ## Author
 - GitHub: [@nimajam41](https://github.com/nimajam41)
-- GitHub: [Nima Jamali](https://www.linkedin.com/in/nima-jamali-5b1521195/)
+- LinkedIn: [Nima Jamali](https://www.linkedin.com/in/nima-jamali-5b1521195/)
 
 ## Contributors
 - [@nimajam41](https://github.com/nimajam41)
