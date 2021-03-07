@@ -1,5 +1,5 @@
 # CE40364 Project
-An interpreter written in Racket for a given programming language. This code is developed [CE40364 (Design of Programming Languages) Course Project.](http://ce.sharif.edu/courses/99-00/1/ce364-1/index.php)
+An interpreter written in Racket for a given programming language. This code is developed for [CE40364 (Design of Programming Languages) Course Project.](http://ce.sharif.edu/courses/99-00/1/ce364-1/index.php)
 
 ## Getting Started
 - Download and install DrRacket based on your platform.([here](https://download.racket-lang.org/))
