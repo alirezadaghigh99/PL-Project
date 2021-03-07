@@ -4,7 +4,7 @@ An interpreter written in Racket for a given programming language. This code is 
 ## Getting Started
 - Download and install DrRacket based on your platform.([here](https://download.racket-lang.org/))
 - [Clone](https://github.com/alirezadaghigh99/PL-Project) project
-- Run [interpreter.rkt(https://github.com/alirezadaghigh99/PL-Project/blob/master/interpreter.rkt)]
+- Run [interpreter.rkt](https://github.com/alirezadaghigh99/PL-Project/blob/master/interpreter.rkt)
 
 ## Author
 - GitHub: [@nimajam41](https://github.com/nimajam41)
