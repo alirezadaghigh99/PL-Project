@@ -3,8 +3,9 @@ An interpreter written in Racket for a given programming language. This code is 
 
 ## Getting Started
 - Download and install DrRacket based on your platform.([here](https://download.racket-lang.org/))
-- Open terminal and type following command
-`<addr>` clone
+- Open terminal and insert following command
+
+`<git clone https://github.com/alirezadaghigh99/PL-Project.git>`
 - Run [interpreter.rkt](https://github.com/alirezadaghigh99/PL-Project/blob/master/interpreter.rkt)
 
 ## Source Code
