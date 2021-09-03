@@ -1,3 +1,0 @@
-a = "salam";
-print a;
-return a + x
